@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Orders.Backend/Orders.Backend.csproj" />
+  <Project Path="Orders.Frontend/Orders.Frontend.csproj" Id="cbd057d4-85dd-424f-9191-8eb4b31bb6dd" />
+  <Project Path="Orders.Shared/Orders.Shared.csproj" Id="369919c2-6150-4e3b-af4a-e938aee0a820" />
+  <Project Path="Orders.Tests/Orders.Tests.csproj" Id="b46c488a-d2dc-43b9-9b3d-95becdf0d01e" />
+</Solution>
