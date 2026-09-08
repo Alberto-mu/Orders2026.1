@@ -4,7 +4,7 @@ namespace Orders.Backend.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class Controller : ControllerBase
     {
         private static readonly string[] Summaries =
         [
