@@ -9,13 +9,13 @@ namespace Orders.Frontend.Pages.Countries
     {
         private Country country = new();
         private CountryForm? countryForm;
-        [Inject] private IRepository repository { get; set; } = null!;
+        [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
-        [Inject] private NavigationManager navigationManager { get; set; } = null!;
+        [Inject] private NavigationManager NavigationManager { get; set; } = null!;
 
         private async Task CreateAsync()
         {
-            var responseHttp = await repository.PostAsync("api/countries", country);
+            var responseHttp = await Repository.PostAsync("api/countries", country);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -38,7 +38,7 @@ namespace Orders.Frontend.Pages.Countries
         private void Return()
         {
             countryForm!.FormPostedSuccessfully = true;
-            navigationManager.NavigateTo("/countries");
+            NavigationManager.NavigateTo("/countries");
         }
     }
 }
