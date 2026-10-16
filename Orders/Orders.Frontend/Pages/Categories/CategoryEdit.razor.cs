@@ -2,14 +2,15 @@
 using Microsoft.AspNetCore.Components;
 using Orders.Frontend.Pages.Countries;
 using Orders.Frontend.Repositories;
+using Orders.Frontend.Shared;
 using Orders.Shared.Entities;
 
 namespace Orders.Frontend.Pages.Categories
 {
     public partial class CategoryEdit
     {
-        private Category? category = null;
-        private CategoryForm? categoryForm;
+        private Category? category;
+        private FormWithName<Category>? categoryForm;
 
         [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
@@ -46,7 +47,7 @@ namespace Orders.Frontend.Pages.Categories
                 category.Id = Id;
             }
 
-            var responseHttp = await Repository.PutAsync("api/categories/", category);
+            var responseHttp = await Repository.PutAsync("api/categories", category);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();

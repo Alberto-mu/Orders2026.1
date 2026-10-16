@@ -8,8 +8,10 @@ namespace Orders.Backend.Controllers
     [Route("api/[controller]")]
     public class CategoriesController : GenericController<Category>
     {
+        private readonly IGenericUnitOfWork<Category> _unitOfWork;
         public CategoriesController(IGenericUnitOfWork<Category> unitOfWork) : base(unitOfWork)
         {
+            _unitOfWork = unitOfWork;
         }
     }
 }

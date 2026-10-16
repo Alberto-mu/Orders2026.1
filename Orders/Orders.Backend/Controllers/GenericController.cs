@@ -45,7 +45,7 @@ namespace Orders.Backend.Controllers
             return BadRequest(action.Message);
         }
 
-        [HttpPost]
+        [HttpPut]
         public virtual async Task<IActionResult> PutAsync(T model)
         {
             var action = await _unitOfWork.UpdateAsync(model);
@@ -59,8 +59,8 @@ namespace Orders.Backend.Controllers
         [HttpDelete("{id}")]
         public virtual async Task<IActionResult> DeleteAsync(int id)
         {
-            var action = await _unitOfWork.GetAsync(id);
-            if (!action.WasSuccess)
+            var action = await _unitOfWork.DeleteAsync(id);
+            if (action.WasSuccess)
             {
                 return NoContent();
             }
