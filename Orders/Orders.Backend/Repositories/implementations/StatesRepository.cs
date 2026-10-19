@@ -59,6 +59,11 @@ namespace Orders.Backend.Repositories.Implementations
                 .Include(x => x.Cities)
                 .Where(x => x.Country!.Id == pagination.Id)
                 .AsQueryable();
+            
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
 
             return new ActionResponse<IEnumerable<State>>
             {
@@ -75,6 +80,11 @@ namespace Orders.Backend.Repositories.Implementations
             var queryable = _context.States
                 .Where(x => x.Country!.Id == pagination.Id)
                 .AsQueryable();
+            
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
 
             double count = await queryable.CountAsync();
             int totalPages = (int)Math.Ceiling(count / pagination.RecordsNumber);
