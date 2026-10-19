@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Orders.Backend.UnitsOfWork;
 using Orders.Backend.UnitsOfWork.Interfaces;
+using Orders.Shared.Entities;
 using Orders.Shared.Entities;
 
 namespace Orders.Backend.Controllers
@@ -9,7 +11,8 @@ namespace Orders.Backend.Controllers
     public class CountriesController : GenericController<Country>
     {
         private readonly ICountriesUnitOfWork _countriesUnitOfWork;
-        public CountriesController(IGenericUnitOfWork<Country> unitOfWork, ICountriesUnitOfWork countriesUnitOfWork) : base(unitOfWork)
+
+        public CountriesController(IGenericUnitOfWork<Country> unit, ICountriesUnitOfWork countriesUnitOfWork) : base(unit)
         {
             _countriesUnitOfWork = countriesUnitOfWork;
         }
@@ -17,10 +20,10 @@ namespace Orders.Backend.Controllers
         [HttpGet]
         public override async Task<IActionResult> GetAsync()
         {
-            var action = await _countriesUnitOfWork.GetAsync();
-            if (action.WasSuccess)
+            var response = await _countriesUnitOfWork.GetAsync();
+            if (response.WasSuccess)
             {
-                return Ok(action.Result);
+                return Ok(response.Result);
             }
             return BadRequest();
         }
@@ -28,14 +31,13 @@ namespace Orders.Backend.Controllers
         [HttpGet("{id}")]
         public override async Task<IActionResult> GetAsync(int id)
         {
-            var action = await _countriesUnitOfWork.GetAsync(id);
-            if (action.WasSuccess)
+            var response = await _countriesUnitOfWork.GetAsync(id);
+            if (response.WasSuccess)
             {
-                return Ok(action.Result);
+                return Ok(response.Result);
             }
-            return NotFound();
+            return NotFound(response.Message);
         }
-
-
     }
 }
+

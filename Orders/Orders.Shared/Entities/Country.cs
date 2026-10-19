@@ -12,11 +12,11 @@ namespace Orders.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es requerido.")]
         public string Name { get; set; } = null!;
 
-        public ICollection<State> States { get; set; }
+        public ICollection<State>? States { get; set; }
 
-        [Display(Name = "Departamentos / Estados")]
-
+        [Display(Name = "Estados/Departamentos")]
         public int StatesNumber => States == null || States.Count == 0 ? 0 : States.Count;
+
 
     }
 }

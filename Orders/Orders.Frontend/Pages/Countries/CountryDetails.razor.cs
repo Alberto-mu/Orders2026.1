@@ -24,7 +24,7 @@ namespace Orders.Frontend.Pages.Countries
 
         private async Task LoadAsync()
         {
-            var responseHttp = await Repository.GetAsync<Country>($"/api/countries/{CountryId}");
+            var responseHttp = await Repository.GetAsync<Country>($"api/countries/{CountryId}");
             if (responseHttp.Error)
             {
                 if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)

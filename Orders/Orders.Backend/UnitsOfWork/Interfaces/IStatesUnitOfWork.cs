@@ -10,3 +10,4 @@ namespace Orders.Backend.UnitsOfWork.Interfaces
         Task<ActionResponse<IEnumerable<State>>> GetAsync();
     }
 }
+
