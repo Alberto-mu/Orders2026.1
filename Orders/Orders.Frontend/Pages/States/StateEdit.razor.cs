@@ -20,7 +20,7 @@ namespace Orders.Frontend.Pages.States
 
         protected override async Task OnParametersSetAsync()
         {
-            var responseHttp = await Repository.GetAsync<State>($"/api/states/{StateId}");
+            var responseHttp = await Repository.GetAsync<State>($"api/states/{StateId}");
             if (responseHttp.Error)
             {
                 if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
@@ -36,7 +36,7 @@ namespace Orders.Frontend.Pages.States
 
         private async Task SaveAsync()
         {
-            var responseHttp = await Repository.PutAsync($"/api/states", state);
+            var responseHttp = await Repository.PutAsync($"api/states", state);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
