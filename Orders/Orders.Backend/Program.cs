@@ -1,5 +1,9 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Orders.Backend.Data;
 using Orders.Backend.Repositories;
 using Orders.Backend.Repositories.implementations;
@@ -9,12 +13,32 @@ using Orders.Backend.UnitsOfWork;
 using Orders.Backend.UnitsOfWork.Implementations;
 using Orders.Backend.UnitsOfWork.Interfaces;
 using Orders.Shared.Entities;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Orders Backend", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme. <br /> <br />
+                      Enter 'Bearer' [space] and then your token in the text input below.<br /> <br />
+                      Example: 'Bearer 12345abcdef'<br /> <br />",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(document =>
+    new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
 
 
 builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -49,6 +73,17 @@ builder.Services.AddIdentity<User, IdentityRole>(x =>
     .AddEntityFrameworkStores<DataContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(x => x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwtKey"]!)),
+        ClockSkew = TimeSpan.Zero
+    });
+
 
 var app = builder.Build();
 SeedData(app);
@@ -73,18 +108,19 @@ app.UseCors(x => x
 if (app.Environment.IsDevelopment())
 {
     // Expone el endpoint JSON de OpenAPI (/openapi/v1.json)
-    app.MapOpenApi();
+    app.UseSwagger();
 
-    // Interfaz gráfica de Swagger UI
+    // 2. Configura Swagger UI para que lea el JSON de Swashbuckle
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Orders Backend v1");
         options.RoutePrefix = "swagger"; // La UI estará en /swagger
     });
 }
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication(); // <-- IMPORTANTE que vaya antes de UseAuthorization
 app.UseAuthorization();
 
 app.MapControllers();
